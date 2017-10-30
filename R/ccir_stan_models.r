@@ -137,8 +137,8 @@ ccir_stan_models <- function(type) {
                                 phat[i] = pp[i];
                                 ERp[i] = 1 - (phat[i]/(1-phat[i]))/(phat[1]/(1-phat[1]));
                   }   
-            }'
-       
+            }',
+             
 		)
 	return((mod))
 }
