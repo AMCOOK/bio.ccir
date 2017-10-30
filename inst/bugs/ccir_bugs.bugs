@@ -1,0 +1,13 @@
+model{
+	for(i in 1:n){
+		
+		p[i] ~ dbeta(alpha[i],beta[i])
+		alpha[i] <- mu[i] * phi
+		beta[i] <- (1-mu[i]) * phi
+		
+		logit(mu[i]) <- 1/(1 + 1/ (A + B * Cuml[i]))
+	}
+	phi ~ dunif(.1,10) 
+	A ~ dnorm(3,0.1)
+	B ~ dnorm(-1,0.1)
+	}
