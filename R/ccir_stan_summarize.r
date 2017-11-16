@@ -9,7 +9,7 @@ ccir_stan_summarize <- function(x=fit,dat=dat,save=T){
 					 a = extract(x,'ERp')$ERp
 					 b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 					 
-			out = (list(LFA= dat$LFA, Yr = dat$Yr, Temp = dat$Temp, Grid = paste(dat$Grid, collapse='.'), Sex = dat$Sex, nSamples = dat$N, dates = dat$dates, N.lobsters.Ref = dat$Nrec, N.lobsters.Exp =dat$Nexp , acceptance.rate = mean(mean_accept_stat_by_chain),ERp = b, ERf = b[,ncol(b)]))
+			out = (list(LFA= dat$LFA, Yr = dat$Yr, Temp = dat$Temp, Grid = paste(dat$Grid, collapse='.'), Seas = paste(dat$Seas, collapse='.'), Sex = dat$Sex, nSamples = dat$N, dates = dat$dates, N.lobsters.Ref = dat$Nrec, N.lobsters.Exp =dat$Nexp , acceptance.rate = mean(mean_accept_stat_by_chain),ERp = b, ERf = b[,ncol(b)]))
 	    fdir = file.path(project.datadirectory('bio.lobster'),'outputs','ccir','summary')
 	  	if(!dir.exists(fdir)) dir.create(fdir,recursive=T,showWarnings=F)
  		fname = paste(fname,'summary','rdata',sep='.')

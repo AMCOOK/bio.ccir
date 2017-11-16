@@ -1,5 +1,5 @@
 #' @export
-ccir_stan_run <- function(dat,inits=c(A0=0.5, B0 = 0.5),save =T){
+ccir_stan_run <- function(dat,inits=c(A0=0.5, B0 = 0.5),save =T,season=NULL){
 
 #inital value sampler for stan
 
@@ -29,7 +29,9 @@ dat$phipp = 100
 
   fdir = file.path(project.datadirectory('bio.lobster'),'outputs','ccir')
   if(!dir.exists(fdir)) dir.create(fdir,recursive=T,showWarnings=F)
-  fname = paste('LFA',dat$LFA,'Year',dat$Yr,'Grid',paste(dat$Grid,collapse='.'),'Sex',dat$Sex,dat$method,sep='.')
+  ti = 1
+  if(!is.null(season)) ti = season  
+  fname = paste('LFA',dat$LFA,'Year',dat$Yr,ti,'Grid',paste(min(dat$Grid),max(dat$Grid),sep='-'),'Season',paste(min(dat$Seas),max(dat$Seas),sep='-'),'Sex',dat$Sex,dat$method,sep='.')
   out = list(fit= fit,dat = dat,file=fname)
   if(save) save(out,file=file.path(fdir,paste(fname,'rdata',sep='.')))
 return(out)    
