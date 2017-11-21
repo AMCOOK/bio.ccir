@@ -1,5 +1,5 @@
 #' @export
-ccir_compile_data <- function(x=ccir_data, size.defns = inp, area.defns = Groupings,season.defns = NULL,sexs=c(1,2,1.5)) {
+ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, area.defns = Groupings,season.defns = NULL,sexs=c(1,2,1.5)) {
 				#sex 1.5 is both males and females combined but not berried if want both males and females sep sexs = c(1,2)
 				x = subset(x, YEAR > 1999)
 				lf = sapply(area.defns,'[','lfa')
@@ -16,11 +16,11 @@ ccir_compile_data <- function(x=ccir_data, size.defns = inp, area.defns = Groupi
 					 								ki = subset(x, LFA == lf[i] & Grid %in% uu & Sex %in% ss)
 					 								ki$mns = as.numeric(month(ki$DATE))
 					 								yr = unique(ki$YEAR)
-					 									for(j in 1:length(yr)){
-					 										
+					 									for(j in 1:length(yr)){			
 					 										lfl = unlist(sapply(season.defns,'[','lfa'))
 															iw = season.defns[[which(arn$lfa == lfl)]]
 					 											for(b in 2:length(iw)){
+					 													#if(yr[j]==2016 & lf == 27) browser()
 					 													ko = subset(ki,YEAR==yr[j] & mns %in% iw[[b]] )
 					 													m = m+1
 							 											aenv = aggregate(Temperature~DATE,data=subset(ko,Temperature > -99),FUN=mean)
@@ -31,7 +31,7 @@ ccir_compile_data <- function(x=ccir_data, size.defns = inp, area.defns = Groupi
 													 					a = aggregate(cbind(Ref,Exp)~DATE,data=ko,FUN=sum)
 																		a $ Total = rowSums(a[,2:3])
 																	    ik = which(a$Total<10)
-																	    a = a[-ik,]
+																	    if(length(ik)>0) a = a[-ik,]
 																		aenv = aenv[which(aenv$DATE %in% a$DATE),] 
 										          						CumLegal <- cumsum(a$Exp)
 										          						CumLegal <- c(0,CumLegal[1:length(CumLegal)-1])
@@ -46,7 +46,23 @@ ccir_compile_data <- function(x=ccir_data, size.defns = inp, area.defns = Groupi
 								          		
 																	yrs = year(as.Date(a$DATE[1]))
 								          							if(n<10) {m = m-1; next}
-													         out[[m]] = list(LFA = lf[i]$lfa,Yr = yrs,Seas = iw[[b]], Grid = uu, Sex = sexs[l], n = n, Cuml=CumLegal/CumLegal[n], p=as.numeric(p), dates = a$DATE, Nrec = sum(a$Ref),Nexp = sum(a$Exp),N = a$Total, E = a$Exp,Temp = aenv$Temperature)
+								          					
+								          					 lll = NULL
+								          					 lands = subset(log.data,LFA == lf[i]$lfa & GRID_NUM %in% uu & month(log.data$DATE_FISHED) %in% iw[[b]] & SYEAR==yr[j])
+								          					 if(nrow(lands)>0){
+								          							 jk = aggregate(WEIGHT_KG~DATE_FISHED,data=lands,FUN=sum)
+								          					 		 jk$WEIGHT_KG = cumsum(jk$WEIGHT_KG)
+								          					 		 a$DATE = as.Date(a$DATE)
+								          					 		 jk = merge(jk,a,all.y=T,by.x='DATE_FISHED',by.y='DATE')
+								          					 		 if(all(c(any(is.na(jk$WEIGHT_KG)) , ! all(is.na(jk$WEIGHT_KG)) , length(is.na(jk$WEIGHT_KG))<5))) {
+								          					 		  		 	jk$WEIGHT_KG = fillNA(jk[,'DATE_FISHED'],jk[,'WEIGHT_KG'])
+								          					 		 		}
+								          					 		 lll = jk$WEIGHT_KG/jk$WEIGHT_KG[nrow(jk)]
+								          					 		 }
+								          					 if(any(is.na(lll))) lll <- NULL
+								          					 		 
+								          					
+								          					 out[[m]] = list(LFA = lf[i]$lfa,Yr = yrs,Seas = iw[[b]], Grid = uu, Sex = sexs[l], n = n, Cuml=CumLegal/CumLegal[n], p=as.numeric(p), dates = a$DATE, Nrec = sum(a$Ref),Nexp = sum(a$Exp),N = a$Total, E = a$Exp,Temp = aenv$Temperature,land = lll)
  													}
  												}
  											}

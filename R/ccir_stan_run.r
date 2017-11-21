@@ -20,10 +20,9 @@ dat$phipp = 100
     ccir_stan <- ccir_stan_models(type = dat$method)
 
 #Parameter section
-    pars.to.monitor = c('A','B','phi','ERp','preds')
-    
+    pars.to.monitor = c('A','B','D','phi','ERp','preds')
     test = stan(model_code = ccir_stan, model_name = dat$method, pars = pars.to.monitor, data = dat, iter = 2000,  warmup=200, thin=1, chains = 1, verbose = F)
-    fit = stan(model_code = ccir_stan, model_name = dat$method, fit=test, data = dat, iter = 22000, warmup=2000, thin=20, cores = 4, verbose = F) 
+    fit = stan(model_code = ccir_stan, model_name = dat$method, fit=test, data = dat, iter = 35000, warmup=2000, thin=20, cores = 4, verbose = F) 
 
   
 

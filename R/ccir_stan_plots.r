@@ -13,12 +13,15 @@ if(type == 'predicted') {
 			a = extract(x,'phat')$phat
 			b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 			  Ylab <- expression(p == c[e] / (c[e] + c[r]))
-			plot(dat$Cuml, dat$p,ylim=c(0,1),type='p',col='red',
+			 CC = dat$Cuml
+			 if(grepl('fish',fname)) CC = dat$land
+			plot(CC, dat$p,ylim=c(0,1),type='p',col='red',
 		            xlab='Cumulative legal catch (proportion of total)',ylab=Ylab,pch=16)
-			lines(dat$Cuml,b[2,],col='blue',lwd=2)
-			lines(dat$Cuml,b[1,],col='blue',lty=2)
-			lines(dat$Cuml,b[3,],col='blue',lty=2)
+			lines(CC,b[2,],col='blue',lwd=2)
+			lines(CC,b[1,],col='blue',lty=2)
+			lines(CC,b[3,],col='blue',lty=2)
 		}
+
 		
 	if(type=='exploitation') {
 			fname = paste('exploitation',fname,'png',sep='.')
@@ -31,11 +34,12 @@ if(type == 'predicted') {
 			lines(as.Date(dat$dates),b[1,],col='blue',lty=2)
 			lines(as.Date(dat$dates),b[3,],col='blue',lty=2)
 		}
+		
 	if(type =='traceplot') {
 		fname = paste('traceplot',fname,'png',sep='.')
 		png(file.path(fdir,fname))
-		if(dat$method=='beta') traceplot(x, pars=c('A','B','phi'),inc_warmup=F)
-		if(dat$method=='binomial') traceplot(x, pars=c('A','B'),inc_warmup=F)
+		if(grepl('beta',fname)) traceplot(x, pars=c('A','B','phi'),inc_warmup=F)
+		if(grepl('binomial',fname)) traceplot(x, pars=c('A','B'),inc_warmup=F)
 		}
 	if(type == 'Temp.by.Expl') {
 			par(mar=c(4,5,2,5))
@@ -99,8 +103,6 @@ if(type == 'predicted') {
      		lines( xval, dprior, col="red", lwd=1, lty="solid" )
      		dev.off()
 			}
-
 		graphics.off()
- 
 	}
 

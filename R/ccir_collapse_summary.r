@@ -2,7 +2,8 @@
 
 ccir_collapse_summary <- function(x) {
 		#x is the list of out from ccir_stan_summarize
-		 LFA = unlist(sapply(x,"[",'LFA'))
+		x = collapse_list(x)
+		LFA = unlist(sapply(x,"[",'LFA'))
 		da = data.frame(LFA=LFA, Grid = NA, Seas = NA,Sex=NA, Yr= NA, Acceptance.rate=NA, Model = NA, NRef = NA, NExp = NA, ERfl = NA, ERfm=NA, ERfu=NA, Ndates=NA)		 
 		 da$Grid = unlist(sapply(x,"[",'Grid'))
 		 da$Seas = unlist(sapply(x,"[",'Seas'))

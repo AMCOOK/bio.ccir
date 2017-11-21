@@ -10,6 +10,8 @@ outputs = numeric(21)
 				gr = as.numeric(unlist(strsplit(y$Grid,"\\.")))
 				if(y$LFA!=33) x  = subset(x,SYEAR == (y$Yr)) #syear in logs is for season ending
 				if(y$LFA==33) x  = subset(x,SYEAR == (y$Yr+1)) #syear in logs is for season ending
+				print('need to check the syear out')
+				browser()
 outputs= c(LFA=y$LFA,Year = y$Yr,gr = y$Grid,Sex = y$Sex,nSexRatioDates = length(y$dates),N.lobsters.Ref = y$N.lobsters.Ref,N.lobsters.Exp = y$N.lobsters.Exp,	ERl = y$ERf[1],ERm = y$ERf[2],ERu = y$ERf[3])
 
 			if(nrow(x)>5) {

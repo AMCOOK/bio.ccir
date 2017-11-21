@@ -37,7 +37,7 @@ ccir_stan_models <- function(type) {
               // priors
               A ~ normal(Ap, App);   
               B ~ normal(Bp, Bpp);
-             phi ~ uniform(phip,phipp);          // put upper on phi if using this
+             phi ~ uniform(phip,phipp);          
               
               // likelihood
                p ~ beta(al, bet);
@@ -78,7 +78,7 @@ ccir_stan_models <- function(type) {
            // priors
             A ~ normal(Ap, 5);   
             B ~ normal(Bp, 5);
-            phi ~ normal(1, 2); #SD         
+            phi ~ normal(1, 2); //SD         
             
             // likelihood
             p ~ normal(mu, phi);
@@ -138,6 +138,145 @@ ccir_stan_models <- function(type) {
                                 ERp[i] = 1 - (phat[i]/(1-phat[i]))/(phat[1]/(1-phat[1]));
                   }   
             }',
+        binomial.fishery.land = '
+          data {
+             int<lower=1> n;                   // sample size
+            vector<lower=0,upper=1>[n] p;     // response 
+            vector<lower=0,upper=1>[n] land;
+            int N[n];     //Total
+            int E[n];     //Exploitable
+            real Ap;
+            real Bp;
+            real App;
+            real Bpp;
+            
+            }
+
+          parameters {
+            real A;                  // reg coefficients
+            real B;
+          }
+     
+        transformed parameters {
+             vector[n] pp;
+          
+          for(i in 1:n) {
+             pp[i] = 1/(1 + 1/ (A + B * land[i]));
+              }
+          }
+            
+        model {
+              //priors
+              A ~ normal(Ap, App);   
+              B ~ normal(Bp, Bpp);
+          
+              // Likelihood
+               E ~ binomial(N, pp);
+              }
+            
+            generated quantities {
+                    vector[n] phat;
+                    vector[n] ERp;
+                    
+               for (i in 1:n) {
+                                phat[i] = pp[i];
+                                ERp[i] = 1 - (phat[i]/(1-phat[i]))/(phat[1]/(1-phat[1]));
+                  }   
+            }',
+      logit.binomial = '
+          data {
+             int<lower=1> n;                   // sample size
+            vector<lower=0,upper=1>[n] p;     // response 
+            vector<lower=0,upper=1>[n] Cuml;
+            int N[n];     //Total
+            int E[n];     //Exploitable
+            real Ap;
+            real Bp;
+            real App;
+            real Bpp;
+            
+            }
+
+          parameters {
+            real A;                  // reg coefficients
+            real B;
+          }
+     
+        transformed parameters {
+             vector[n] logit_pp;
+          
+          for(i in 1:n) {
+             logit_pp[i] = A + B * Cuml[i];
+              }
+          }
+            
+        model {
+              //priors
+              A ~ normal(0, 100);   
+              B ~ normal(0, 100);
+          
+              // Likelihood
+               E ~ binomial_logit(N, logit_pp);
+              }
+            
+            generated quantities {
+                    vector[n] phat;
+                    vector[n] ERp;
+                    
+               for (i in 1:n) {
+                                phat[i] = inv_logit(logit_pp[i]);
+                                ERp[i] = 1 - (phat[i]/(1-phat[i]))/(phat[1]/(1-phat[1]));
+                  }   
+            }',
+   logit.binomial.cov = '
+          data {
+             int<lower=1> n;                   // sample size
+            vector<lower=0,upper=1>[n] p;     // response 
+            vector<lower=0,upper=1>[n] Cuml;
+            int N[n];     //Total
+            int E[n];     //Exploitable
+            real Temp[n];     //Temperature
+
+            real Ap;
+            real Bp;
+            real App;
+            real Bpp;
+            
+            }
+
+          parameters {
+            real A;                  // reg coefficients
+            real B;
+            real D;
+          }
+     
+        transformed parameters {
+             vector[n] logit_pp;
+          
+          for(i in 1:n) {
+             logit_pp[i] = A + B * Cuml[i] + D * Temp[i];
+              }
+          }
+            
+        model {
+              //priors
+              A ~ normal(0, 100);   
+              B ~ normal(0, 100);
+              D ~ normal(0, 100);          
+              // Likelihood
+               E ~ binomial_logit(N, logit_pp);
+              }
+            
+            generated quantities {
+                    vector[n] phat;
+                    vector[n] ERp;
+                    
+               for (i in 1:n) {
+                                phat[i] = inv_logit(logit_pp[i]);
+                                ERp[i] = 1 - (phat[i]/(1-phat[i]))/(phat[1]/(1-phat[1]));
+                  }   
+            }'
+
              
 		)
 	return((mod))
