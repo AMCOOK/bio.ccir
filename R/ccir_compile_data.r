@@ -1,7 +1,7 @@
 #' @export
 ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, area.defns = Groupings,season.defns = NULL,sexs=c(1,2,1.5)) {
 				#sex 1.5 is both males and females combined but not berried if want both males and females sep sexs = c(1,2)
-				x = subset(x, YEAR > 1999)
+				x = subset(x, YEAR > 2000)
 				lf = sapply(area.defns,'[','lfa')
 					out = list()
 					m=0
@@ -16,14 +16,22 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
 					 								ki = subset(x, LFA == lf[i] & Grid %in% uu & Sex %in% ss)
 					 								ki$mns = as.numeric(month(ki$DATE))
 					 								yr = unique(ki$YEAR)
-					 									for(j in 1:length(yr)){			
+					 									for(j in 1:length(yr)){		
+					 									#browser()	
 					 										lfl = unlist(sapply(season.defns,'[','lfa'))
 															iw = season.defns[[which(arn$lfa == lfl)]]
 					 											for(b in 2:length(iw)){
+					 												#print(paste("i =",i))
+					 												#print(paste("k =",k))
+					 												#print(paste("l =",l))
+					 												#print(paste("j =",j))
+					 												#print(paste("b =",b))
 					 													#if(yr[j]==2016 & lf == 27) browser()
 					 													ko = subset(ki,YEAR==yr[j] & mns %in% iw[[b]] )
 					 													m = m+1
-							 											aenv = aggregate(Temperature~DATE,data=subset(ko,Temperature > -99),FUN=mean)
+
+							 											if(nrow(subset(ko,Temperature > -99))>0)aenv = aggregate(Temperature~DATE,data=subset(ko,Temperature > -99),FUN=mean,na.rm=T)
+																		else aenv = data.frame(DATE=sort(unique(ko$DATE)),Temperature=NA)
 																		iy = subset(size.defns,Year==yr[j] & LFA == lf[i])
 																		ko$Ref = ko$Exp = 0 
 																		ko$Ref = ifelse(ko$Size >= iy$FSRSRefLower & ko$Size <= iy$FSRSRefUpper & ko$Short==1,1,0)
@@ -46,8 +54,9 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
 								          		
 																	yrs = year(as.Date(a$DATE[1]))
 								          							if(n<10) {m = m-1; next}
-								          					
 								          					 lll = NULL
+								          					 #print(j)
+								          					 #if(j == 18)browser()
 								          					 lands = subset(log.data,LFA == lf[i]$lfa & GRID_NUM %in% uu & month(log.data$DATE_FISHED) %in% iw[[b]] & SYEAR==yr[j])
 								          					 if(nrow(lands)>0){
 								          							 jk = aggregate(WEIGHT_KG~DATE_FISHED,data=lands,FUN=sum)
