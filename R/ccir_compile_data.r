@@ -17,7 +17,7 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
 					 								ki$mns = as.numeric(month(ki$DATE))
 					 								yr = unique(ki$YEAR)
 					 									for(j in 1:length(yr)){		
-					 									#browser()	
+					 									#if(j==18)browser()	
 					 										lfl = unlist(sapply(season.defns,'[','lfa'))
 															iw = season.defns[[which(arn$lfa == lfl)]]
 					 											for(b in 2:length(iw)){
@@ -29,7 +29,6 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
 					 													#if(yr[j]==2016 & lf == 27) browser()
 					 													ko = subset(ki,YEAR==yr[j] & mns %in% iw[[b]] )
 					 													m = m+1
-
 							 											if(nrow(subset(ko,Temperature > -99))>0)aenv = aggregate(Temperature~DATE,data=subset(ko,Temperature > -99),FUN=mean,na.rm=T)
 																		else aenv = data.frame(DATE=sort(unique(ko$DATE)),Temperature=NA)
 																		iy = subset(size.defns,Year==yr[j] & LFA == lf[i])
@@ -43,16 +42,14 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
 																		aenv = aenv[which(aenv$DATE %in% a$DATE),] 
 										          						CumLegal <- cumsum(a$Exp)
 										          						CumLegal <- c(0,CumLegal[1:length(CumLegal)-1])
-										            
 										          						p = a$Exp/a$Total
 																        n = length(p)
-
 										          						io = which(p==1)
 								          								p[io] = 0.99
 								          								io = which(p==0)
 								          								p[io] = 0.01
-								          		
-																	yrs = year(as.Date(a$DATE[1]))
+								          							yrs = yr[j]
+																	#yrs = year(as.Date(a$DATE[1]))
 								          							if(n<10) {m = m-1; next}
 								          					 lll = NULL
 								          					 #print(j)
