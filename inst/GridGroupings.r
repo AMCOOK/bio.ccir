@@ -37,5 +37,6 @@ Groupings[[4]] <- list(lfa = '31a',G1 = 337:340)
 Groupings[[5]] <- list(lfa = '31b',G1 = 331:336)
 Groupings[[6]] <- list(lfa = 32,G1 = 323:330)
 Groupings[[7]] <- list(lfa = 33,G1 = c(301:312,469:480,485:492),G2 = c(313:322,481:484))
-
+Groupings[[8]] <- list(lfa = 34, G1 = c(81:114), G2 = c(124:141), G3 = c(155:177))
+Groupings[[9]] <- list(lfa = 35, G1 = 1:7, G2 = 14:15, G3 = 47:56)
 save(Groupings, file = file.path(project.datadirectory('bio.lobster'),'data','inputs','ccir_groupings.rdata'))
