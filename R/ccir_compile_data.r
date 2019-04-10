@@ -52,7 +52,7 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
 																	#yrs = year(as.Date(a$DATE[1]))
 								          							if(n<10) {m = m-1; next}
 								          					 lll = NULL
-								          					 #print(j)
+								          					 print(yr[j])
 								          					 #if(j == 18)browser()
 								          					 lands = subset(log.data,LFA == lf[i]$lfa & GRID_NUM %in% uu & month(log.data$DATE_FISHED) %in% iw[[b]] & SYEAR==yr[j])
 								          					 if(nrow(lands)>0){
