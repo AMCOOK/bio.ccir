@@ -17,22 +17,16 @@ ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, ar
               ki$mns = as.numeric(month(ki$DATE))
               yr = unique(ki$YEAR)
                for(j in 1:length(yr)){  
-               #if(j==18)browser() 
                 lfl = unlist(sapply(season.defns,'[','lfa'))
                iw = season.defns[[which(arn$lfa == lfl)]]
                  for(b in 2:length(iw)){
-                  #print(paste("i =",i))
-                  #print(paste("k =",k))
-                  #print(paste("l =",l))
-                  #print(paste("j =",j))
-                  #print(paste("b =",b))
-                   #if(yr[j]==2016 & lf == 27) browser()
                    ko = subset(ki,YEAR==yr[j] & mns %in% iw[[b]] )
                    m = m+1
                    if(nrow(subset(ko,Temperature > -99))>0)aenv = aggregate(Temperature~DATE,data=subset(ko,Temperature > -99),FUN=mean,na.rm=T)
                   else aenv = data.frame(DATE=sort(unique(ko$DATE)),Temperature=NA)
                   iy = subset(size.defns,Year==yr[j] & LFA == lf[i])
-                  ko$Ref = ko$Exp = 0 
+                 if(nrow(iy)==0) {print(paste('Skipping', yr[j],lf[i])); next()}
+                   ko$Ref = ko$Exp = 0 
                   ko$Ref = ifelse(ko$Size >= iy$FSRSRefLower & ko$Size <= iy$FSRSRefUpper & ko$Short==1,1,0)
                   ko$Exp = ifelse(ko$Size >= iy$FSRSExpLower & ko$Size <= iy$FSRSExpUpper & ko$Short==0,1,0)
                    a = aggregate(cbind(Ref,Exp)~DATE,data=ko,FUN=sum)
