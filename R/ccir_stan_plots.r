@@ -10,7 +10,7 @@ if(!dir.exists(fdir)) dir.create(fdir,recursive=T, showWarnings=F)
 if(type == 'predicted') {
 	fname = paste('predicted',fname,'png',sep='.')
 	png(file.path(fdir,fname))
-			a = extract(x,'phat')$phat
+			a = rstan::extract(x,'phat')$phat
 			b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 			  Ylab <- expression(p == c[e] / (c[e] + c[r]))
 			 CC = dat$Cuml
@@ -27,7 +27,7 @@ if(type == 'predicted') {
 			fname = paste('exploitation',fname,'png',sep='.')
 			png(file.path(fdir,fname))
 	
-		 a = extract(x,'ERp')$ERp
+		 a = rstan::extract(x,'ERp')$ERp
 		 b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 	     plot(as.Date(dat$dates), b[2,],ylim=c(0,1),type='l',col='blue',
 		            xlab='Date',ylab='Exploitation Index',lwd=2)
@@ -45,7 +45,7 @@ if(type == 'predicted') {
 			par(mar=c(4,5,2,5))
 			fname = paste('exploitation.by.temp',fname,'png',sep='.')
 			png(file.path(fdir,fname))
-	        a = extract(x,'ERp')$ERp
+	        a = rstan::extract(x,'ERp')$ERp
 		 	b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 	        plot(as.Date(dat$dates), b[2,],ylim=c(0,1),type='l',col='blue',
 		            xlab='Date',ylab='Exploitation Index',lwd=2)
@@ -67,7 +67,7 @@ if(type == 'predicted') {
 			    #phi
 					fname1 = paste('phi.pp',fname,'png',sep='.')
 					png(file.path(fdir,fname1))
-						  ph = extract(x,'phi')$phi
+						  ph = rstan::extract(x,'phi')$phi
 				  		  xrange = range( ph, dat$phip, dat$phipp, na.rm=T )* addr
 				      	  xval = seq( xrange[1], xrange[2], length=500 )
 				          postdat = hist( ph, breaks=75, plot=FALSE )
@@ -81,7 +81,7 @@ if(type == 'predicted') {
 
  		fname1 = paste('A.pp',fname,'png',sep='.')
 		png(file.path(fdir,fname1))
-		    	a = extract(x,'A')$A
+		    	a = rstan::extract(x,'A')$A
 		      	xrange = c(-5,10)* addr
     			xval = seq( xrange[1], xrange[2], length=500 )
       			dprior = dnorm( xval, mean=dat$Ap, sd=dat$App )
@@ -93,7 +93,7 @@ if(type == 'predicted') {
 
      	fname1 = paste('B.pp',fname,'png',sep='.')
 		png(file.path(fdir,fname1))
-		    	b = extract(x,'B')$B
+		    	b = rstan::extract(x,'B')$B
 		      	xrange = c(-5,10)* addr
     			xval = seq( xrange[1], xrange[2], length=500 )
       			dprior = dnorm( xval, mean=dat$Ap, sd=dat$App )
