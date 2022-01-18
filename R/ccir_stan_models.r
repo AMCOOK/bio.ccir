@@ -93,7 +93,7 @@ ccir_stan_models <- function(type) {
             }
           }',
       
-          binomial = '
+          bino = '
           data {
              int<lower=1> n;                   // sample size
             vector<lower=0,upper=1>[n] p;     // response 
