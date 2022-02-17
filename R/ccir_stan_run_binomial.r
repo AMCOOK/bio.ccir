@@ -17,7 +17,7 @@ dat$phipp = 100
       pars.to.monitor = c('A','B','ERp')
       #test = stan(model_code = ccir_stan, model_name = 'binomial', pars = pars.to.monitor, fit=test, data = dat, iter = 2000,  warmup=200, thin=1, chains = 1, verbose = F)
     
-      fit = stan(model_code = ccir_stan, model_name = 'binomial', fit=test, data = dat, iter = 35000, warmup=2000, thin=20, cores = 4, verbose = F) 
+      fit = stan(model_code = ccir_stan, model_name = 'bino', fit=test, data = dat, iter = 35000, warmup=2000, thin=20, cores = 4, verbose = F) 
 
   
 
