@@ -1,7 +1,7 @@
 #' @export
-ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, area.defns = Groupings,season.defns = NULL,sexs=c(1,2,1.5)) {
+ccir_compile_data <- function(x=ccir_data, log.data = logs, size.defns = inp, area.defns = Groupings,season.defns = NULL,sexs=c(1,2,1.5), start.yr=2000) {
     #sex 1.5 is both males and females combined but not berried if want both males and females sep sexs = c(1,2)
-    x = subset(x, YEAR > 2000)
+    x = subset(x, YEAR > start.yr)
     lf = sapply(area.defns,'[','lfa')
      out = list()
      m=0
