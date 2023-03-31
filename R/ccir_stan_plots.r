@@ -1,20 +1,23 @@
 
 #' @export
-ccir_stan_plots <- function(x,dat=dat,type = c('predicted','exploitation','trace','prior.posterior','')) {
+ccir_stan_plots <- function(x,dat=dat,type = c('predicted','exploitation','trace','prior.posterior',''),save=F) {
 		#x = s tan fitted object
 		#dat = raw data file for stan
-fdir = file.path(project.figuredirectory('bio.lobster'),'ccir')
-if(!dir.exists(fdir)) dir.create(fdir,recursive=T, showWarnings=F)
-
+if(save) {fdir = file.path(project.figuredirectory('bio.lobster'),'ccir')
+          if(!dir.exists(fdir)) dir.create(fdir,recursive=T, showWarnings=F)
+    }
 	if(length(x)>1) {fname = x$file; dat = x$dat; x = x$fit;}
-if(type == 'predicted') {
-	fname = paste('predicted',fname,'png',sep='.')
-	png(file.path(fdir,fname))
+
+  if(type == 'predicted') {
+	if(save){
+	  fname = paste('predicted',fname,'png',sep='.')
+  	png(file.path(fdir,fname))
+	  }
 			a = rstan::extract(x,'phat')$phat
 			b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 			  Ylab <- expression(p == c[e] / (c[e] + c[r]))
 			 CC = dat$Cuml
-			 if(grepl('fish',fname)) CC = dat$land
+		#	 if(grepl('fish',fname)) CC = dat$land
 			plot(CC, dat$p,ylim=c(0,1),type='p',col='red',
 		            xlab='Cumulative legal catch (proportion of total)',ylab=Ylab,pch=16)
 			lines(CC,b[2,],col='blue',lwd=2)
@@ -24,9 +27,11 @@ if(type == 'predicted') {
 
 		
 	if(type=='exploitation') {
-			fname = paste('exploitation',fname,'png',sep='.')
-			png(file.path(fdir,fname))
-	
+	if(save){
+	  fname = paste('exploitation',fname,'png',sep='.')
+	  png(file.path(fdir,fname))
+	  
+	}	
 		 a = rstan::extract(x,'ERp')$ERp
 		 b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 	     plot(as.Date(dat$dates), b[2,],ylim=c(0,1),type='l',col='blue',
@@ -42,9 +47,11 @@ if(type == 'predicted') {
 		if(grepl('binomial',fname)) traceplot(x, pars=c('A','B'),inc_warmup=F)
 		}
 	if(type == 'Temp.by.Expl') {
-			par(mar=c(4,5,2,5))
-			fname = paste('exploitation.by.temp',fname,'png',sep='.')
-			png(file.path(fdir,fname))
+		
+	  	par(mar=c(4,5,2,5))
+		if(save){
+	  	fname = paste('exploitation.by.temp',fname,'png',sep='.')
+			png(file.path(fdir,fname))}
 	        a = rstan::extract(x,'ERp')$ERp
 		 	b = apply(a,2,quantile,probs=c(0.025,0.5,0.975))
 	        plot(as.Date(dat$dates), b[2,],ylim=c(0,1),type='l',col='blue',
@@ -103,6 +110,6 @@ if(type == 'predicted') {
      		lines( xval, dprior, col="red", lwd=1, lty="solid" )
      		dev.off()
 			}
-		graphics.off()
+	#	graphics.off()
 	}
 
