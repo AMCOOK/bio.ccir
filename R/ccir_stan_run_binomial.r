@@ -12,7 +12,7 @@ dat$App = 5
 dat$Bpp = 5
 dat$phipp = 100
 #Model choice
-browser()
+
     ccir_stan <- ccir_stan_models_binomial()
       pars.to.monitor = c('A','B','ERp')
       #test = stan(model_code = ccir_stan, model_name = 'binomial', pars = pars.to.monitor, fit=test, data = dat, iter = 2000,  warmup=200, thin=1, chains = 1, verbose = F)
